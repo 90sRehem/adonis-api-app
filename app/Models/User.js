@@ -15,6 +15,18 @@ class User extends Model {
     })
   }
 
+  static get hidden () {
+    return ['password']
+  }
+
+  permissions () {
+    return this.hasMany('App/Models/Permissions')
+  }
+
+  roles () {
+    return this.hasMany('App/Models/Role')
+  }
+
   addresses () {
     return this.hasMany('App/Models/UserAddress')
   }

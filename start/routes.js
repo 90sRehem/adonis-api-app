@@ -2,7 +2,12 @@
 
 const Route = use('Route')
 
-Route.post('users', 'UserController.store').validator('User')
+Route.group(() => {
+  Route.get('users', 'UserController.index').middleware('auth')
+  Route.get('users/:id', 'UserController.show').middleware('auth')
+  Route.post('users', 'UserController.store').validator('User')
+  Route.put('users/:id', 'UserController.update').middleware('auth')
+})
 
 Route.post('sessions', 'SessionController.store').validator('Session')
 
@@ -16,6 +21,7 @@ Route.group(() => {
   Route
     .resource('projects', 'ProjectController')
     .apiOnly()
+    // .except(['index', 'show'])
     .validator(new Map(
       [
         [
@@ -35,6 +41,7 @@ Route.group(() => {
         ]
       ]
     ))
-}).middleware(['auth'])
+}).middleware(['auth', 'is: (admin)'/* , 'can:show_tasks' */])
 
 Route.resource('permissions', 'PermissionController').apiOnly().middleware('auth')
+Route.resource('roles', 'RoleController').apiOnly().middleware('auth')
